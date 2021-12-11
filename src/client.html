@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/static/client.css">
+    <title>chatting web app</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-content: center;
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        .container {
+            background-color: rgb(236, 229, 229);
+            width: auto;
+            height: auto;
+            max-width: 500px;
+            border-radius: 20px;
+              box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+        
+        .form-horizontal {
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>CHAT DEMO</h1>
+        <ul id="message"></ul>
+        <form id="chatform" class="form-horizontal">
+            <input type="text" id="chatmess" />
+            <button id="send">Send</button>
+        </form>
+    </div>
+
+
+</body>
+
+
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const chatform = document.querySelector("#chatform");
+    const chatmess = document.querySelector("#chatmess");
+    const name = prompt("your name");
+
+    chatform.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const message = chatmess.value;
+        if (message != "") {
+            socket.emit("on-chat", {
+                name,
+                message,
+            });
+        }
+
+        chatmess.value = "";
+    });
+
+    const messages = document.querySelector("#message");
+
+    socket.on("nlogin", (user) => {
+        console.log(user);
+        const chatlines = document.createElement("h4");
+        chatlines.textContent = user;
+        messages.appendChild(chatlines);
+    });
+    socket.on("user-chat", (message) => {
+        const chatlines = document.createElement("h4");
+
+        chatlines.textContent = `${message.name} : ${message.message}`;
+        messages.appendChild(chatlines);
+    });
+</script>
+
+</html>
