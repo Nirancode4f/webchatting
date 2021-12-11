@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 io.on("connection", socket => {
     console.log("user connected")
     io.emit("nlogin",
-        ">>new user login<<"
+        ">>a new user login<<"
     )
 
     socket.on("on-chat", data => {
